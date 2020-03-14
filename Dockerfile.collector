@@ -1,15 +1,12 @@
 FROM golang:1-alpine as builder
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
-    apk --update --no-cache add musl-dev git gcc make ca-certificates
+RUN apk --update --no-cache add musl-dev git gcc make ca-certificates
 
 ARG TAG_NAME
 
 WORKDIR /app
 
-ENV GOPROXY=https://goproxy.io
-
-RUN https_proxy=192.168.100.100:18000 git clone https://github.com/jaegertracing/jaeger.git . \
+RUN git clone https://github.com/jaegertracing/jaeger.git . \
     && git checkout $TAG_NAME \
     && git submodule update --init --recursive \
     && make install-tools \
