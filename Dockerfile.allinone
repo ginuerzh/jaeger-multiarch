@@ -38,7 +38,7 @@ EXPOSE 14250
 EXPOSE 16686
 
 COPY --from=builder /app/cmd/all-in-one/all-in-one-linux /go/bin/
-COPY /app/cmd/all-in-one/sampling_strategies.json /etc/jaeger/
+COPY --from=builder /app/cmd/all-in-one/sampling_strategies.json /etc/jaeger/
 
 VOLUME ["/tmp"]
 ENTRYPOINT ["/go/bin/all-in-one-linux"]

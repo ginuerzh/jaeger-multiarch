@@ -132,7 +132,7 @@ jobs:
         fi
 
         echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/jaeger-query
-        echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386
+        echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
 
       # https://github.com/crazy-max/ghaction-docker-buildx
     - name: Set up Docker Buildx
@@ -189,7 +189,7 @@ jobs:
         fi
 
         echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/jaeger-all-in-one
-        echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386
+        echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
 
       # https://github.com/crazy-max/ghaction-docker-buildx
     - name: Set up Docker Buildx
