@@ -1,0 +1,45 @@
+FROM golang:1-alpine as builder
+
+RUN apk --update --no-cache add musl-dev git gcc make yarn ca-certificates
+
+ARG TAG_NAME
+
+WORKDIR /app
+
+RUN git clone https://github.com/jaegertracing/jaeger.git . \
+    && git checkout $TAG_NAME \
+    && git submodule update --init --recursive \
+    && make install-tools \
+    && make build-all-in-one-linux
+
+FROM scratch
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+# Agent zipkin.thrift compact
+EXPOSE 5775/udp
+
+# Agent jaeger.thrift compact
+EXPOSE 6831/udp
+
+# Agent jaeger.thrift binary
+EXPOSE 6832/udp
+
+# Agent config HTTP
+EXPOSE 5778
+
+# Collector HTTP
+EXPOSE 14268
+
+# Collector gRPC
+EXPOSE 14250
+
+# Web HTTP
+EXPOSE 16686
+
+COPY --from=builder /app/cmd/all-in-one/all-in-one-linux /go/bin/
+COPY /app/cmd/all-in-one/sampling_strategies.json /etc/jaeger/
+
+VOLUME ["/tmp"]
+ENTRYPOINT ["/go/bin/all-in-one-linux"]
+CMD ["--sampling.strategies-file=/etc/jaeger/sampling_strategies.json"]
